@@ -1,9 +1,9 @@
 import { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { Link,useNavigate } from 'react-router-dom';
-import Alerta from './../components/Alerta';
+import Alerta from './../components/Alerta.jsx';
 import clienteAxios from './../config/clienteAxios';
-import useAuth from '../hooks/useAuth';
+import useAuth from '../hooks/useAuth.jsx';
 
 const Login = () => {
 	const [email,setEmail]=useState('')
@@ -12,6 +12,7 @@ const Login = () => {
 	
 	const {setAuth } = useAuth()
 
+	const navigate = useNavigate()
 
 	const handleSubmit = async e => { 
 		e.preventDefault()
@@ -28,6 +29,7 @@ try {
 	setAlerta({})
 	localStorage.setItem('token', data.token)
 	setAuth(data)
+	navigate('/proyectos')
 } catch (error) {
 	
 	setAlerta({
