@@ -9,7 +9,7 @@ const conectarDB = async () => {
         useUnifiedTopology: true,
       });
     const url = (`${connection.connection.host}: ${connection.connection.port}`);
-    console.log(`👻Connected to : ${url}`);
+    console.log(`👻 ==>  Connected to : ${url}`);
   } catch (error) {
     console.log(`Error: ${error.message}`)
     process.exit(1);

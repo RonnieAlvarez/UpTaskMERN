@@ -11,12 +11,14 @@ const RutaProtegida = () => {
 			{auth._id ? (
 				<div className='bg-gray-100 '>
 					<div className='sticky top-0 z-50 shadow'>
-					<Header />
+						<Header />
 					</div>
 					<div className='md:flex md:min-h-screen'>
 						<Sidebar />
 
-						<main className='p-10 flex-1 overflow-y-scroll'>
+						<main className='p-10 flex-1 '>
+							{/* h-screen overflow-y-scroll */}
+							{' '}
 							<Outlet />
 						</main>
 					</div>

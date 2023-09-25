@@ -1,9 +1,10 @@
 import Proyecto from '../models/Proyecto.js';
 import Tarea from '../models/Tarea.js';
+import mongoose from 'mongoose';
 
 const agregarTarea = async (req, res) => {
 	const { proyecto } = req.body;
-	console.log(proyecto)
+	//console.log('agregar tarea: ',proyecto)
 	const existeProyecto = await Proyecto.findById(proyecto);
 
 	if (!existeProyecto) {
@@ -15,14 +16,19 @@ const agregarTarea = async (req, res) => {
 		const error = new Error('El usuario no tiene permisos para añadir');
 		return res.status(403).json({ msg: error.message });
 	}
-	
+
+	const new_id = new mongoose.Types.ObjectId();
+	const tareaPorAlmacenar = new Tarea(req.body);
+	tareaPorAlmacenar._id = new_id;
+
 	try {
-		console.log('linea 20 tarea controllers :',req.body)
-		const tareaAlmacenada = await Tarea.create(req.body);
-		//Almacenar el ID de cada tarea en el proyecto 
-	//TODO: esta fallando la creacion de tareas
+		const tareaAlmacenada = await Tarea.create(tareaPorAlmacenar);
+		
+		//TODO: 
+//		console.log('id de ? : ',tareaAlmacenada)
 		existeProyecto.tareas.push(tareaAlmacenada._id);
 		await existeProyecto.save()
+//		console.log('tarea almacenada', tareaAlmacenada)
 		res.json(tareaAlmacenada);
 	} catch (error) {
 		console.error(error);

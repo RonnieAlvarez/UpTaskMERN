@@ -5,8 +5,10 @@ import { useParams } from 'react-router-dom';
 import useProyectos from '../hooks/useProyectos';
 import ModalFormularioTarea from '../components/ModalFormularioTarea.jsx';
 import ModalEliminarTarea from '../components/ModalEliminarTarea';
+import ModalEliminarColaborador from '../components/ModalEliminarColaborador';
 import Tarea from '../components/Tarea';
 import Alerta from '../components/alerta';
+import Colaborador from '../components/Colaborador';
 
 const Proyecto = () => {
 	const params = useParams();
@@ -17,11 +19,14 @@ const Proyecto = () => {
 	}, []);
 
 	const { nombre } = proyecto;
+
 	if (cargando) return 'Cargando...';
 
 	const { msg } = alerta;
 
-	return (
+	return msg && alerta.error ? (
+		<Alerta alerta={alerta} />
+	) : (
 		<>
 			<div className='flex justify-between'>
 				<h2 className='font-black text-4xl'>{nombre}</h2>
@@ -74,7 +79,7 @@ const Proyecto = () => {
 			<div className='flex justify-start'>
 				<div className='w-full md:w-1/3 lg:w-1/4'>{msg && <Alerta alerta={alerta} />}</div>
 			</div>
-			<div className='flex-1 overflow-y-scroll'>
+			<div className='flex-1'>
 				<div className='bg-white shadow  rounded-lg'>
 					{proyecto.tareas?.length ? (
 						proyecto.tareas?.map((tarea) => (
@@ -88,8 +93,32 @@ const Proyecto = () => {
 					)}
 				</div>
 			</div>
+			<div className='flex items-center justify-between mt-10'>
+				<p className='font-bold text-xl '>Colaboradores</p>
+				<Link
+					to={`/proyectos/nuevo-colaborador/${proyecto._id}`}
+					className='text-gray-400 hover:text-black uppercase font-bold transition-colors '
+				>
+					Añadir
+				</Link>
+			</div>
+
+			<div className='bg-white shadow  rounded-lg'>
+				{proyecto.colaboradores?.length ? (
+					proyecto.colaboradores?.map((colaborador) => (
+						<Colaborador
+							key={colaborador._id}
+							colaborador={colaborador}
+						/>
+					))
+				) : (
+					<p className='text-center my-5 p-10'>No hay colaboradores en este Proyecto</p>
+				)}
+			</div>
+
 			<ModalFormularioTarea />
 			<ModalEliminarTarea />
+			<ModalEliminarColaborador />
 		</>
 	);
 };

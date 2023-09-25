@@ -5,11 +5,11 @@ import useProyectos from "../hooks/useProyectos";
 
 const Tarea = ({ tarea }) => {
   const {handleModalEditarTarea, handleModalEliminarTarea} = useProyectos();
-	const { descripcion, nombre, prioridad, fechaEntrega, _id, estado } = tarea;
+	const { descripcion, nombre, prioridad, fechaEntrega, estado } = tarea;
 	return (
 		<div className='border-b-4 border-gray-600 p-5 flex justify-between items-center'>
 			<div>
-				<p className='mb-1text-xl font-bold'>{nombre}</p>
+				<p className='mb-1text-xl font-bold'>{nombre} </p>
 				<p className='mb-1text-sm text-gray-500 uppercase'>{descripcion}</p>
 				<p className='mb-1text-sm'>{formatearFecha(fechaEntrega)}</p>
 				<p className='mb-1text-gray-600'>Prioridad: {prioridad}</p>

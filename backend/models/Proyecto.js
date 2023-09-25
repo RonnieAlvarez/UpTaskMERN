@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const proyectosShema = mongoose.Schema(
 	{
+		
 		nombre: {
 			type: String,
 			trim: true,

@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 const PRIORIDAD = ['Baja', 'Media', 'Alta'];
 
 const ModalFormularioTarea = () => {
-	const [id,setId]=useState('')
+	const [id,setId]=useState(null)
 	const [nombre, setNombre] = useState('');
 	const [descripcion, setDescripcion] = useState('');
 	const [fechaEntrega, setFechaEntrega] = useState('');
@@ -26,7 +26,7 @@ const ModalFormularioTarea = () => {
 			setPrioridad(tarea.prioridad);
 			return;
 		}
-		setId(null);
+		setId('');
 		setNombre('');
 		setDescripcion('');
 		setFechaEntrega('');
@@ -44,7 +44,7 @@ const ModalFormularioTarea = () => {
 		}
 		//TODO: voy a eliminar el id por error de typo en la validacion
 		await submitTarea({id, nombre, descripcion, fechaEntrega, prioridad, proyecto: params.id });
-		setId(null);
+		setId('');
 		setNombre('');
 		setDescripcion('');
 		setFechaEntrega('');

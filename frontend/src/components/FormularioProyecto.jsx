@@ -5,7 +5,7 @@ import useProyectos from '../hooks/useProyectos';
 import Alerta from './alerta';
 
 const FormularioProyecto = () => {
-	const [id,setId]= useState(null)
+	const [id,setId]= useState('')
 	const [nombre, setNombre] = useState('');
 	const [descripcion, setDescripcion] = useState('');
 	const [fechaEntrega, setFechaEntrega] = useState('');
@@ -36,7 +36,8 @@ const FormularioProyecto = () => {
 		}
 		//pasar los datos hacia el provider
 		await submitProyecto({id, nombre, descripcion, fechaEntrega, cliente });
-		setId(null),setNombre(''), setDescripcion(''), setFechaEntrega(''), setCliente('');
+		setId(''),
+			setNombre(''), setDescripcion(''), setFechaEntrega(''), setCliente('');
 
 	};
 	const { msg } = alerta;

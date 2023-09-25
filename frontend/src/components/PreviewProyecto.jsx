@@ -6,7 +6,7 @@ const PreviewProyecto = ({ proyecto }) => {
   return (
 		<div className='border-b p-5 flex'>
 			<p className='flex-1'>
-				{nombre} {' - '}
+				{nombre}
 				<span className="text-sm text-gray-500 uppercase">{' '}{cliente}</span>
 			</p>
 			<Link

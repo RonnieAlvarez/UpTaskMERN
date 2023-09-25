@@ -1,32 +1,36 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-const usuarioSchema = mongoose.Schema({
-	nombre: {
-		type: String,
-		required: true,
-		trim: true,
+const usuarioSchema = mongoose.Schema(
+	{
+	
+		nombre: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		password: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		email: {
+			type: String,
+			required: true,
+			trim: true,
+			unique: true,
+		},
+		token: {
+			type: String,
+		},
+		confirmado: {
+			type: Boolean,
+			default: false,
+		},
 	},
-	password: {
-		type: String,
-		required: true,
-		trim: true,
-	},
-	email: {
-		type: String,
-		required: true,
-    trim: true,
-    unique:true
-  },
-  token: {
-    type: String,
-  },
-  confirmado: {
-    type: Boolean,
-    default: false,
-  }
-}, {
-  timestamps: true, 
-});
+	{
+		timestamps: true,
+	}
+);
 
 usuarioSchema.pre('save', async function(next) {
 	//verifica que el usuario no ah sido modificado

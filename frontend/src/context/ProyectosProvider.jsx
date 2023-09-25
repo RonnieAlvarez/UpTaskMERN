@@ -3,7 +3,8 @@
 import { useState, useEffect, createContext } from 'react';
 import clienteAxios from '../config/clienteAxios';
 import { useNavigate } from 'react-router-dom';
-import ModalFormularioTarea from './../components/ModalFormularioTarea';
+
+
 
 const ProyectosContext = createContext();
 
@@ -15,6 +16,9 @@ const ProyectosProvider = ({ children }) => {
 	const [modalFormularioTarea, setModalFormularioTarea] = useState(false);
 	const [tarea, setTarea] = useState({});
 	const [modalEliminarTarea, setModalEliminarTarea] = useState(false)
+	const [colaborador, setColaborador] = useState({})
+	const [modalEliminarColaborador, setModalEliminarColaborador] = useState(false)
+	
 
 	const navigate = useNavigate();
 
@@ -101,7 +105,6 @@ const ProyectosProvider = ({ children }) => {
 			const { data } = await clienteAxios.post('/proyectos', proyecto, config);
 			//despliega los proyectos nuevos
 			setProyectos([...proyectos, data]);
-
 			setAlerta({
 				msg: 'Proyecto creado correctamente',
 				error: false,
@@ -131,8 +134,12 @@ const ProyectosProvider = ({ children }) => {
 
 			const { data } = await clienteAxios(`/proyectos/${id}`, config);
 			setProyecto(data);
+			setAlerta({})
 		} catch (error) {
-			console.log(error);
+			setAlerta({
+				msg: error.response.data.msg,
+				error:true				
+			})
 		} finally {
 			setCargando(false);
 		}
@@ -186,11 +193,7 @@ const ProyectosProvider = ({ children }) => {
 					Authorization: `Bearer ${token}`,
 				},
 			};
-			//TODO:
-			console.log(token)
-			console.log('linea 189 proyprovider: ',tarea)
 			const { data } = await clienteAxios.post('/tareas', tarea, config);
-			console.log(data)
 			//Agrega la tarea al state
 			const proyectoActualizado = { ...proyecto };
 			proyectoActualizado.tareas = [...proyecto.tareas, data];
@@ -220,7 +223,6 @@ const ProyectosProvider = ({ children }) => {
 					Authorization: `Bearer ${token}`,
 				},
 			};
-			//TODO: 
 			
 			const { data } = await clienteAxios.put(`/tareas/${tarea.id}`, tarea, config);
 			//Actualizar el Dom state
@@ -274,7 +276,105 @@ const ProyectosProvider = ({ children }) => {
 	} catch (error) {
 		console.log(error);
 	}
-}
+	}
+	
+	const submitColaborador = async email => {
+		setCargando(true)
+		try {
+				const token = localStorage.getItem('token');
+				if (!token) return;
+
+				const config = {
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+			}
+			const { data } = await clienteAxios.post('/proyectos/colaboradores', { email },config)
+			setColaborador(data)
+			setAlerta({})
+
+		} catch (error) {
+			setAlerta({
+				msg: error.response.data.msg,
+				error:true
+			});
+			
+		} finally {setCargando(false)}
+	}
+
+	const agregarColaborador = async email => { 
+		try {
+				const token = localStorage.getItem('token');
+				if (!token) return;
+
+				const config = {
+					headers: {
+						'content-type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+			}
+			window.scrollTo(0, 0);
+			const { data } = await clienteAxios.post(`/proyectos/colaboradores/${proyecto._id}`, email, config);
+			setAlerta({
+				msg: data.msg,
+				error: false,
+			});
+
+			setColaborador({})
+
+			setTimeout(() => {
+				setAlerta({})
+			}, 2000);
+
+		} catch (error) {
+			setAlerta({
+				msg: error.response.data.msg,
+				error:true
+			})
+		}
+	}
+
+	const handleModalEliminarColaborador = (colaborador) => { 
+		setModalEliminarColaborador(!modalEliminarColaborador); 
+		setColaborador(colaborador)
+	}
+
+	const eliminarColaborador = async () => { 
+		try {
+			const token = localStorage.getItem('token');
+			if (!token) return;
+
+			const config = {
+				headers: {
+					'content-type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
+			};
+			const { data } = await clienteAxios.post(`/proyectos/eliminar-colaborador/${proyecto._id}`, { id: colaborador._id }, config);
+			
+			const proyectoActualizado = { ...proyecto }
+			proyectoActualizado.colaboradores = proyectoActualizado.colaboradores.filter(colaboradorState =>
+				colaboradorState._id !== colaborador._id)
+			
+			setProyecto(proyectoActualizado)
+			window.scrollTo(0, 0);
+			setAlerta({
+				msg: data.msg,
+				error: false,
+			});
+
+			setColaborador({})
+			setModalEliminarColaborador(false)
+
+			setTimeout(() => {
+				setAlerta({});
+			}, 2000);
+
+		} catch (error) {
+			console.error(error.response);
+		}
+	}
 
 	//----------------------------------------------------------------//
 	return (
@@ -296,6 +396,12 @@ const ProyectosProvider = ({ children }) => {
 				modalEliminarTarea,
 				handleModalEliminarTarea,
 				eliminarTarea,
+				submitColaborador,
+				colaborador,
+				agregarColaborador,
+				modalEliminarColaborador,
+				handleModalEliminarColaborador,
+				eliminarColaborador,
 			}}
 		>
 			{children}
