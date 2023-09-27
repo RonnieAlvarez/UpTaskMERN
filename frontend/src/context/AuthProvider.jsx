@@ -27,11 +27,11 @@ const AuthProvider = ({ children }) => {
 				},
 			};
 			try {
-				// en esta parte si el usuario ya se ah autenticado lo dirige a proyecto sin estar pasando por login 
-				//cada vez que ingresa a la app
+				// en esta parte si el usuario ya se ah autenticado lo dirige a proyecto sin estar pasando
+				// por login cada vez que ingresa a la app
 				const { data } = await clienteAxios('/usuarios/perfil', config);
         setAuth(data);
-        navigate('/proyectos')  // si se quita esta linea siempre tiene que estar digitando usuario y password
+        // navigate('/proyectos')  // si se quita esta linea siempre tiene que estar digitando usuario y password
 			} catch (error) {
 				setAuth({})
 			} 

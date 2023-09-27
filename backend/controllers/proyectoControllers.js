@@ -6,13 +6,12 @@ import Usuario from '../models/Usuario.js';
 const obtenerProyectos = async (req, res) => {
   const proyectos = await Proyecto
     .find({
-      '$or': [
+      $or: [
         {colaboradores: { $in: req.usuario }},
         {creador:{ $in: req.usuario }}
       ]
     })
     .select('-tareas')
-
   res.json(proyectos)
 }
 
@@ -24,11 +23,8 @@ const nuevoProyecto = async (req, res) => {
   proyecto._id = new_id
   
   try {
-    //TODO: check
-    
     const proyectoAlmacendo = await proyecto.save()
     res.json(proyectoAlmacendo)
-    //res.json(proyecto)
   } catch (error) {
     console.log(error)
   }
@@ -36,24 +32,24 @@ const nuevoProyecto = async (req, res) => {
 
 const obtenerProyecto = async (req, res) => { 
   const { id } = req.params
-  const proyecto = await Proyecto.findById(id).populate('tareas').populate('colaboradores',"nombre email")
+  const proyecto = await Proyecto
+    .findById(id)
+    .populate({ path: 'tareas', populate: { path: 'completado', select: 'nombre' } })
+    .populate('colaboradores', "nombre email")
   
   if (!proyecto) { 
         const error = new Error('Proyecto no encontrado');
 				return res.status(401).json({ msg: error.message });
   }
+
   if (proyecto.creador.toString() !== req.usuario._id.toString() &&
-   proyecto.colaboradores.some((colaborador)=> colaborador._id.toString()===req.usuario._id.toString()) ) {
+    proyecto.colaboradores.some((colaborador) =>
+      colaborador._id.toString() !== req.usuario._id.toString())) {
     const error = new Error('Acción no válida !!');
 		return res.status(401).json({ msg: error.message });
   }
   //Obtener tareas del proyecto
-  //const tareas = await Tarea.find().where('proyecto').equals(proyecto._id);
   res.json(proyecto)
-  
-
-  
- 
 };
 const editarProyecto = async (req, res) => {
     const { id } = req.params;
@@ -102,7 +98,8 @@ const eliminarProyecto = async (req, res) => {
 
 const buscarColaborador = async (req, res) => {
   const { email } = req.body
-  const usuario = await Usuario.findOne({ email }).select('-confirmado -createdAt -password -token -updatedAt -__v')
+  const usuario = await Usuario.findOne({ email })
+    .select('-confirmado -createdAt -password -token -updatedAt -__v')
   if (!usuario) {
     const error = new Error("Usuario no encontrado")
     return res.status(404).json({ msg: error.message })

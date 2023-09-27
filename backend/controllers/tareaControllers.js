@@ -11,7 +11,7 @@ const agregarTarea = async (req, res) => {
 		const error = new Error('El proyecto no Existe');
 		return res.status(404).json({ msg: error.message });
 	}
-	
+
 	if (existeProyecto.creador.toString() !== req.usuario._id.toString()) {
 		const error = new Error('El usuario no tiene permisos para añadir');
 		return res.status(403).json({ msg: error.message });
@@ -23,12 +23,12 @@ const agregarTarea = async (req, res) => {
 
 	try {
 		const tareaAlmacenada = await Tarea.create(tareaPorAlmacenar);
-		
-		//TODO: 
-//		console.log('id de ? : ',tareaAlmacenada)
+
+		//TODO:
+		//		console.log('id de ? : ',tareaAlmacenada)
 		existeProyecto.tareas.push(tareaAlmacenada._id);
-		await existeProyecto.save()
-//		console.log('tarea almacenada', tareaAlmacenada)
+		await existeProyecto.save();
+		//		console.log('tarea almacenada', tareaAlmacenada)
 		res.json(tareaAlmacenada);
 	} catch (error) {
 		console.error(error);
@@ -83,14 +83,39 @@ const eliminarTarea = async (req, res) => {
 	if (tarea.proyecto.creador.toString() !== req.usuario._id.toString()) {
 		const error = new Error('Acción no válida');
 		return res.status(403).json({ msg: error.message });
-  }
-  try {
-    await tarea.deleteOne()
-    res.json({msg:"La tarea se Eliminó correctamente"})
-  } catch (error) {
-    console.log(error.message)
-  }
+	}
+	try {
+		const proyecto = await Proyecto.findById(tarea.proyecto)
+		proyecto.tareas.pull(tarea._id)
+
+		await Promise.allSettled([await proyecto.save(), await tarea.deleteOne()]);
+
+		res.json({ msg: 'La tarea se Eliminó correctamente' });
+	} catch (error) {
+		console.log(error.message);
+	}
 };
-const cambiarEstado = async (req, res) => {};
+
+const cambiarEstado = async (req, res) => {
+	const { id } = req.params;
+	const tarea = await Tarea.findById(id).populate('proyecto');
+	if (!tarea) {
+		const error = new Error('Tarea no encontrada');
+		return res.status(404).json({ msg: error.message });
+	}
+	if (
+		tarea.proyecto.creador.toString() !== req.usuario._id.toString() &&
+		tarea.proyecto.colaboradores.some((colaborador) =>
+			colaborador._id.toString() !== req.usuario._id.toString())
+	) {
+		const error = new Error('Acción no válida');
+		return res.status(403).json({ msg: error.message });
+	}
+	tarea.estado = !tarea.estado
+	tarea.completado = req.usuario._id
+	await tarea.save();
+	const tareaAlmacenada = await Tarea.findById(id).populate('proyecto').populate('completado');
+	res.json(tareaAlmacenada);
+};
 
 export { agregarTarea, obtenerTarea, actualizarTarea, cambiarEstado, eliminarTarea };

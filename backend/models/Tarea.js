@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const tareaSchema = mongoose.Schema(
 	{
-
 		nombre: {
 			type: String,
 			trim: true,
@@ -30,6 +29,10 @@ const tareaSchema = mongoose.Schema(
 		proyecto: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Proyecto',
+		},
+		completado: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Usuario',
 		},
 	},
 	{
