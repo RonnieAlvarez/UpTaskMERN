@@ -9,7 +9,6 @@ function classNames(...classes) {
 const Busqueda = () => {
   const [ busqueda, setBusqueda] = useState('')
   const { buscador, handleBuscador,proyectos } = useProyectos()
-  console.log(proyectos)
   const proyectosFiltrados = busqueda === '' ? [] : proyectos.filter(proyectos =>
     proyectos.nombre.toLowerCase().includes(busqueda.toLowerCase()))
   

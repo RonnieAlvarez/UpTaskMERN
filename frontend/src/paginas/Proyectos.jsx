@@ -4,8 +4,9 @@ import Alerta from '../components/alerta.jsx';
 
 const Proyectos = () => {
 	const { proyectos, alerta } = useProyectos();
-	const { msg } = alerta
 	
+	
+	const { msg } = alerta
 	return (
 		<>
 			<h1 className='text-4xl font-black'>Proyectos</h1>

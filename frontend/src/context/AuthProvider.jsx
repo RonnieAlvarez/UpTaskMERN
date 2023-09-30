@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useState, useEffect, createContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import clienteAxios from '../config/clienteAxios';
 
 const AuthContext = createContext();
@@ -10,7 +10,7 @@ const AuthProvider = ({ children }) => {
 	const [auth, setAuth] = useState({});
   const [cargando, setCargando] = useState(true);
   
-  const navigate=useNavigate()
+  //const navigate=useNavigate()
 
 	useEffect(() => {
 		const autenticarUsuario = async () => {
@@ -41,12 +41,17 @@ const AuthProvider = ({ children }) => {
 		autenticarUsuario();
 	}, []);
 	
+	const cerrarSessionAuth = () => {
+		setAuth({})
+	}
+
 	return (
 		<AuthContext.Provider
 			value={{
-        auth,
+				auth,
 				setAuth,
-        cargando
+				cargando,
+				cerrarSessionAuth,
 			}}
 		>
 			{children}
