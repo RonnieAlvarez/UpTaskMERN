@@ -1,9 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect } from 'react';
 import FormularioColaborador from '../components/FormularioColaborador';
 import useProyectos from '../hooks/useProyectos';
 import { useParams } from 'react-router-dom';
-import Alerta from '../components/alerta';
+import Alerta from './../components/Alerta.jsx';
 
 const NuevoColaborador = () => {
 	const { obtenerProyecto, proyecto, cargando, colaborador, agregarColaborador,alerta } = useProyectos();
@@ -11,7 +11,7 @@ const NuevoColaborador = () => {
 
 	useEffect(() => {
 		obtenerProyecto(params.id);
-	}, []);
+	}, [obtenerProyecto, params.id]);
 
   if (!proyecto?._id) return <Alerta alerta={alerta}/>
 	return (

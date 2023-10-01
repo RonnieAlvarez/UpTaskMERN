@@ -1,6 +1,6 @@
 import useProyectos from '../hooks/useProyectos.jsx';
 import PreviewProyecto from '../components/PreviewProyecto.jsx';
-import Alerta from '../components/alerta.jsx';
+import Alerta from '../components/Alerta.jsx';
 
 const Proyectos = () => {
 	const { proyectos, alerta } = useProyectos();

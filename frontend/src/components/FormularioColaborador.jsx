@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useProyectos from '../hooks/useProyectos';
-import Alerta from './alerta';
+import Alerta from './Alerta';
 
 const FormularioColaborador = () => {
   const [email, setEmail] = useState('');
