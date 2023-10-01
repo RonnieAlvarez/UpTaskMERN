@@ -2,7 +2,7 @@
 import { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useProyectos from '../hooks/useProyectos';
-import Alerta from './alerta';
+import Alerta from './Alerta.jsx';
 
 const FormularioProyecto = () => {
 	const [id,setId]= useState('')
